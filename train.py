@@ -102,7 +102,7 @@ train_data_loader = torch.utils.data.DataLoader(dataset=train_set,
 val_data_loader = torch.utils.data.DataLoader(dataset=val_set,
                                               batch_size=1,
                                               shuffle=False,
-                                              drop_last=True
+                                              drop_last=True,
                                               pin_memory=True)
 
 test_data_loader = torch.utils.data.DataLoader(dataset=test_set,
