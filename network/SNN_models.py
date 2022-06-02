@@ -75,29 +75,33 @@ class StereoSpike(NeuromorphicNet):
         self.bottom = nn.Sequential(
             nn.Conv2d(in_channels=4, out_channels=32, kernel_size=5, stride=1, padding=2, bias=False),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
 
         # encoder layers (downsampling)
         self.conv1 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5, stride=2, padding=2, bias=False),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
         self.conv2 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, stride=2, padding=2, bias=False),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
         self.conv3 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5, stride=2, padding=2, bias=False),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
         self.conv4 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             nn.Conv2d(in_channels=256, out_channels=512, kernel_size=5, stride=2, padding=2, bias=False),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
 
         # residual layers
@@ -108,41 +112,49 @@ class StereoSpike(NeuromorphicNet):
 
         # decoder layers (upsampling)
         self.deconv4 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=512, out_channels=256, kernel_size=5, up_size=(33, 44)),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
         self.deconv3 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=256, out_channels=128, kernel_size=5, up_size=(65, 87)),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
         self.deconv2 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=128, out_channels=64, kernel_size=5, up_size=(130, 173)),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
         self.deconv1 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=64, out_channels=32, kernel_size=5, up_size=(260, 346)),
             MultiplyBy(multiply_factor),
-            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
+            # neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
         )
 
         # these layers output depth maps at different scales, where depth is represented by the potential of IF neurons
         # that do not fire ("I-neurons"), i.e., with an infinite threshold.
         self.predict_depth4 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=256, out_channels=1, kernel_size=3, up_size=(260, 346), bias=True),
             MultiplyBy(multiply_factor),
         )
         self.predict_depth3 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=128, out_channels=1, kernel_size=3, up_size=(260, 346), bias=True),
             MultiplyBy(multiply_factor),
         )
         self.predict_depth2 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=64, out_channels=1, kernel_size=3, up_size=(260, 346), bias=True),
             MultiplyBy(multiply_factor),
         )
         self.predict_depth1 = nn.Sequential(
+            neuron.IFNode(v_threshold=self.v_th, v_reset=self.v_rst, surrogate_function=self.surrogate_fct, detach_reset=True),
             NNConvUpsampling(in_channels=32, out_channels=1, kernel_size=3, up_size=(260, 346), bias=True),
             MultiplyBy(multiply_factor),
         )
