@@ -142,19 +142,22 @@ class SEWResBlock(nn.Module):
                  surrogate_function=surrogate.Sigmoid(), use_plif=False, tau=2.,  multiply_factor=1.):
         super(SEWResBlock, self).__init__()
 
+        self.sn1 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
+
         self.conv1 = nn.Sequential(
             nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=1, padding=(3 - 1) // 2, bias=False),
             MultiplyBy(multiply_factor),
         )
 
-        self.sn1 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
+        # self.sn1 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
+        self.sn2 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
 
         self.conv2 = nn.Sequential(
             nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=1, padding=(3 - 1) // 2, bias=False),
             MultiplyBy(multiply_factor),
         )
 
-        self.sn2 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
+        # self.sn2 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
 
         self.connect_function = connect_function
 
@@ -162,10 +165,15 @@ class SEWResBlock(nn.Module):
 
         identity = x
 
-        out = self.conv1(x)
-        out = self.sn1(out)
-        out = self.conv2(out)
+        # out = self.conv1(x)
+        # out = self.sn1(out)
+        # out = self.conv2(out)
+        # out = self.sn2(out)
+        
+        out = self.sn1(x)
+        out = self.conv1(out)     
         out = self.sn2(out)
+        out = self.conv2(out)
 
         if self.connect_function == 'ADD':
             out += identity

@@ -66,6 +66,7 @@ learning_rate = 0.0002
 weight_decay = 0.0
 n_epochs = 70
 show = False           # display network's predictions during training / validation
+resume = True          # if continue after break down
 
 
 ###########################
@@ -176,8 +177,18 @@ tb_writer = SummaryWriter('./results/checkpoints/')
 ############
 # TRAINING #
 ############
+if resume:
+    if './results/checkpoints/'.isfile('ReCpt'):
+        checkpoint = torch.load('ReCpt')
+        start_epoch = checkpoint['epoch'] + 1
+        net.load_state_dict(torch.load('./results/checkpoints/stereospike.pth'))
+        print("=> loaded checkpoint (epoch {})".format(checkpoint['epoch']))
+    else:
+        start_epoch = 0
+        print("=> no checkpoint found")
 
-for epoch in range(n_epochs):
+
+for epoch in range(start_epoch,n_epochs):
 
     running_train_loss = 0
     running_train_MDE = 0
@@ -354,5 +365,12 @@ for epoch in range(n_epochs):
     net.increment_epoch()
 
     scheduler.step()
+
+    checkpoint = {
+    'epoch': epoch,
+    # 'model': model.state_dict(),
+    # 'optimizer': optimizer.state_dict(),
+    }
+    torch.save(checkpoint,'ReCpt')
 
 print("training finished !")
