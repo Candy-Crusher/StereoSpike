@@ -23,6 +23,7 @@ from network.metrics import MeanDepthError, log_to_lin_depths, disparity_to_dept
 from network.loss import Total_Loss
 
 from viz import show_learning
+import os
 
 
 ##############################
@@ -66,7 +67,6 @@ learning_rate = 0.0002
 weight_decay = 0.0
 n_epochs = 70
 show = False           # display network's predictions during training / validation
-resume = True          # if continue after break down
 
 
 ###########################
@@ -116,7 +116,17 @@ test_data_loader = torch.utils.data.DataLoader(dataset=test_set,
 # NETWORK #
 ###########
 
-net = StereoSpike(surrogate_function=surrogate.ATan(), detach_reset=True, v_threshold=1.0, v_reset=0.).to(device)
+resume = True          # if continue after break down
+start_epoch = 0 # change it to the one you want to continue with
+net = StereoSpike(surrogate_function=surrogate.ATan(), detach_reset=True, v_threshold=1.0, v_reset=0., ReEpoch=start_epoch).to(device)
+if resume:
+    # checkpoint = torch.load('ReCpt')
+    # start_epoch = checkpoint['epoch'] + 1
+    net.load_state_dict(torch.load('./results/checkpoints/stereospike.pth'))
+    print("=> loaded checkpoint (epoch {})".format(start_epoch))
+else:
+    # start_epoch = 0
+    print("=> start from beginning")
 # net = StereoSpike_equivalentANN(activation_function=nn.Sigmoid()).to(device)
 # net = fromZero_feedforward_multiscale_tempo_Matt_SpikeFlowNetLike(tau=3., v_threshold=1.0, v_reset=0.0, use_plif=True, multiply_factor=10.).to(device)
 
@@ -177,16 +187,6 @@ tb_writer = SummaryWriter('./results/checkpoints/')
 ############
 # TRAINING #
 ############
-if resume:
-    if './results/checkpoints/'.isfile('ReCpt'):
-        checkpoint = torch.load('ReCpt')
-        start_epoch = checkpoint['epoch'] + 1
-        net.load_state_dict(torch.load('./results/checkpoints/stereospike.pth'))
-        print("=> loaded checkpoint (epoch {})".format(checkpoint['epoch']))
-    else:
-        start_epoch = 0
-        print("=> no checkpoint found")
-
 
 for epoch in range(start_epoch,n_epochs):
 

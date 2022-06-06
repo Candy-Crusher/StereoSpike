@@ -9,7 +9,7 @@ from .blocks import SEWResBlock, NNConvUpsampling, MultiplyBy
 
 
 class NeuromorphicNet(nn.Module):
-    def __init__(self, surrogate_function=surrogate.Sigmoid(), detach_reset=True, v_threshold=1.0, v_reset=0.0):
+    def __init__(self, surrogate_function=surrogate.Sigmoid(), detach_reset=True, v_threshold=1.0, v_reset=0.0, ReEpoch=0):
         super().__init__()
         self.surrogate_fct = surrogate_function
         self.detach_rst = detach_reset
@@ -17,7 +17,7 @@ class NeuromorphicNet(nn.Module):
         self.v_rst = v_reset
 
         self.max_test_accuracy = float('inf')
-        self.epoch = 0
+        self.epoch = ReEpoch
 
     def detach(self):
         for m in self.modules():
