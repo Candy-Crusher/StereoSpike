@@ -116,17 +116,17 @@ test_data_loader = torch.utils.data.DataLoader(dataset=test_set,
 # NETWORK #
 ###########
 
-resume = True          # if continue after break down
+# resume = True          # if continue after break down
 start_epoch = 0 # change it to the one you want to continue with
 net = StereoSpike(surrogate_function=surrogate.ATan(), detach_reset=True, v_threshold=1.0, v_reset=0., ReEpoch=start_epoch).to(device)
-if resume:
-    # checkpoint = torch.load('ReCpt')
-    # start_epoch = checkpoint['epoch'] + 1
-    net.load_state_dict(torch.load('./results/checkpoints/stereospike.pth'))
-    print("=> loaded checkpoint (epoch {})".format(start_epoch))
-else:
-    # start_epoch = 0
-    print("=> start from beginning")
+# if resume:
+#     # checkpoint = torch.load('ReCpt')
+#     # start_epoch = checkpoint['epoch'] + 1
+#     net.load_state_dict(torch.load('./results/checkpoints/stereospike.pth'))
+#     print("=> loaded checkpoint (epoch {})".format(start_epoch))
+# else:
+#     # start_epoch = 0
+#     print("=> start from beginning")
 # net = StereoSpike_equivalentANN(activation_function=nn.Sigmoid()).to(device)
 # net = fromZero_feedforward_multiscale_tempo_Matt_SpikeFlowNetLike(tau=3., v_threshold=1.0, v_reset=0.0, use_plif=True, multiply_factor=10.).to(device)
 
