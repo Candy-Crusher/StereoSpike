@@ -6,7 +6,7 @@ from torch import Tensor
 from torch.nn.parameter import Parameter
 
 from spikingjelly.clock_driven import functional, surrogate, neuron, layer, rnn
-
+from .TA import CSA
 
 ##############
 # ANN BLOCKS #
@@ -158,7 +158,7 @@ class SEWResBlock(nn.Module):
         )
 
         # self.sn2 = neuron.ParametricLIFNode(init_tau=tau, v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True) if use_plif else neuron.IFNode(v_threshold=v_threshold, v_reset=v_reset, surrogate_function=surrogate_function, detach_reset=True)
-
+        self.csa = CSA(timeWindows=1, channels=512)
         self.connect_function = connect_function
 
     def forward(self, x):
@@ -174,6 +174,7 @@ class SEWResBlock(nn.Module):
         out = self.conv1(out)     
         out = self.sn2(out)
         out = self.conv2(out)
+        out = self.csa(out)
 
         if self.connect_function == 'ADD':
             out += identity
