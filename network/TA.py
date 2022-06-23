@@ -63,22 +63,25 @@ class TimeAttention(nn.Module):
 class ChannelAttention(nn.Module):
     def __init__(self, in_planes, ratio=5):
         super(ChannelAttention, self).__init__()
-        self.avg_pool = nn.AdaptiveAvgPool3d(1)
-        self.max_pool = nn.AdaptiveMaxPool3d(1)
+        # self.avg_pool = nn.AdaptiveAvgPool3d(1)
+        # self.max_pool = nn.AdaptiveMaxPool3d(1)
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.max_pool = nn.AdaptiveMaxPool2d(1)
+
 
         self.sharedMLP = nn.Sequential(
-            nn.Conv3d(in_planes, in_planes // ratio, 1, bias=False),
+            nn.Conv2d(in_planes, in_planes // ratio, 1, bias=False),
             nn.ReLU(),
-            nn.Conv3d(in_planes // ratio, in_planes, 1, bias=False),
+            nn.Conv2d(in_planes // ratio, in_planes, 1, bias=False),
         )
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        x = rearrange(x, "b f c h w -> b c f h w")
+        # x = rearrange(x, "b f c h w -> b c f h w")
         avgout = self.sharedMLP(self.avg_pool(x))
         maxout = self.sharedMLP(self.max_pool(x))
         out = self.sigmoid(avgout + maxout)
-        out = rearrange(out, "b c f h w -> b f c h w")
+        # out = rearrange(out, "b c f h w -> b f c h w")
         return out
 
 
@@ -92,13 +95,14 @@ class SpatialAttention(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        c = x.shape[2]
-        x = rearrange(x, "b f c h w -> b (f c) h w")
+        # c = x.shape[2]
+        c = x.shape[1]
+        # x = rearrange(x, "b f c h w -> b (f c) h w")
         avgout = torch.mean(x, dim=1, keepdim=True)
         maxout, _ = torch.max(x, dim=1, keepdim=True)
         x = torch.cat([avgout, maxout], dim=1)
         x = self.conv(x)
-        x = x.unsqueeze(1)
+        # x = x.unsqueeze(1)
 
         return self.sigmoid(x)
 
