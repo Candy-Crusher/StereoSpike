@@ -161,7 +161,7 @@ class CSA(nn.Module):
     ):
         super(CSA, self).__init__()
 
-        self.relu = nn.ReLU(inplace=True)
+        # self.relu = nn.ReLU(inplace=True)
 
         self.ca = ChannelAttention(channels, c_ratio)
         # self.ta = TimeAttention(timeWindows)

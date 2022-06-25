@@ -42,10 +42,10 @@ def set_random_seed(seed):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    if int(torch.__version__.split('.')[1]) < 8:
-        torch.set_deterministic(True)  # for pytorch < 1.8
-    else:
-        torch.use_deterministic_algorithms(True)
+    #if int(torch.__version__.split('.')[1]) < 8:
+    #    torch.set_deterministic(True)  # for pytorch < 1.8
+    #else:
+    #    torch.use_deterministic_algorithms(True)
 
     # NumPy
     np.random.seed(seed)
